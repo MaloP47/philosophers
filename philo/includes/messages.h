@@ -1,33 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.h                                     :+:      :+:    :+:   */
+/*   messages.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/14 14:03:58 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/08/15 10:52:56 by mpeulet          ###   ########.fr       */
+/*   Created: 2023/08/15 09:52:49 by mpeulet           #+#    #+#             */
+/*   Updated: 2023/08/15 10:30:45 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILOSOPHERS_H
-# define PHILOSOPHERS_H
+#ifndef MESSAGES_H
+# define MESSAGES_H
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <strings.h>
-# include <sys/time.h>
-# include <pthread.h>
-# include <stdint.h>
+# define RED "\033[0;91m"
+# define DEF "\033[0;39m"
 
-# include "messages.h"
-
-/* *** utils.c *** */
-
-size_t		ft_strlen(const char *s);
-void		putstr_errendl(char *s);
-int			error_exit(char *s);
-uint64_t	time_in_ms(void);
+# define ERR_TIME RED"Error : time_in_ms!"DEF
 
 #endif
