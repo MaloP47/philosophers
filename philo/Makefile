@@ -6,7 +6,7 @@
 #    By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 14:03:32 by mpeulet           #+#    #+#              #
-#    Updated: 2023/08/15 10:38:44 by mpeulet          ###   ########.fr        #
+#    Updated: 2023/08/15 22:05:32 by mpeulet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,7 @@ INCLUDE			= 	-I ./includes/
 
 OBJ_DIR_P 		= obj/
 SRC_DIR_P		= src/
-SRC_FUNCTIONS_P	= utils
+SRC_FUNCTIONS_P	= init parsing utils
 
 PHIL_SRC		= $(addprefix $(SRC_DIR_P), $(addsuffix .c, $(SRC_FUNCTIONS_P)))
 PHIL_OBJ		= $(addprefix $(OBJ_DIR_P), $(addsuffix .o, $(SRC_FUNCTIONS_P)))
@@ -62,7 +62,7 @@ $(OBJ_DIR_P)%.o: $(SRC_DIR_P)%.c | $(IFMAKE_DIR_P)
 
 $(NAME): $(PHIL_OBJ)
 					@echo "$(GREY)Compiling philo...$(DEF_COLOR)"
-					@$(CC) $(FLAGS) -o $(NAME) src/main.c $(PHILO_OBJ) $(LIBFT) $(INCLUDE)
+					@$(CC) $(FLAGS) -o $(NAME) src/main.c $(PHIL_OBJ) $(INCLUDE)
 					@echo "$(GREEN)philo ready.$(DEF_COLOR)"
 
 clean:

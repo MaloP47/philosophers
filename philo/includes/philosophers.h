@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:03:58 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/08/15 10:52:56 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/08/15 21:57:17 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,25 @@
 # include <stdint.h>
 
 # include "messages.h"
+
+typedef struct s_philo
+{
+	int	nb_philo;
+	int	ttd;
+	int	tte;
+	int	tts;
+	int	nb_lunch;
+}		t_philo;
+
+/* *** init.c *** */
+
+int			struct_init(t_philo *philo);
+
+/* *** parsing.c *** */
+
+int			ft_str_is_digit(char *s);
+int			ft_atoi(const char *str);
+int			check_args(int ac, char **av, t_philo *philo);
 
 /* *** utils.c *** */
 
