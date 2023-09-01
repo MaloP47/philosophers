@@ -6,7 +6,7 @@
 #    By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 14:03:32 by mpeulet           #+#    #+#              #
-#    Updated: 2023/08/15 22:05:32 by mpeulet          ###   ########.fr        #
+#    Updated: 2023/08/30 21:34:28 by mpeulet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ ORANGE			= \033[38;5;214m
 
 NAME			= philo
 CC				= cc
-FLAGS			= -Wall -Werror -Wextra -pthread
+FLAGS			= -Wall -Werror -Wextra -pthread -g3
 RM				= rm -rf
 TXT				= *txt
 VCF				= valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
