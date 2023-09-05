@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 19:51:32 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/08/16 20:11:17 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/05 14:54:44 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,9 @@ int	ft_str_is_digit(char *s)
 
 int	ft_atoi(const char *str)
 {
-	int	i;
-	int	sign;
-	int	nb;
+	int		i;
+	int		sign;
+	long	nb;
 
 	if (!str)
 		return (0);
@@ -47,6 +47,8 @@ int	ft_atoi(const char *str)
 	while (str[i] && (str[i] >= 48 && str[i] <= 57))
 	{
 		nb = (nb * 10) + (str[i] - 48);
+		if (nb * sign > INT_MAX || nb * sign < INT_MIN)
+			return (-2147483649);
 		i++;
 	}
 	return (nb * sign);
@@ -62,7 +64,7 @@ int	check_args(int ac, char **av, t_philo *philo)
 		return (error_exit(NB_ARG), 0);
 	while (i < ac)
 	{
-		if (!ft_str_is_digit(av[i]))
+		if (!ft_str_is_digit(av[i]) || ft_atoi(av[i]) == -2147483649);
 			return (error_exit(ARG_FORM), 0);
 		i++;
 	}
