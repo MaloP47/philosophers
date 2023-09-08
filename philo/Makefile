@@ -6,7 +6,7 @@
 #    By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 14:03:32 by mpeulet           #+#    #+#              #
-#    Updated: 2023/08/30 21:34:28 by mpeulet          ###   ########.fr        #
+#    Updated: 2023/09/08 13:31:15 by mpeulet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ ORANGE			= \033[38;5;214m
 
 NAME			= philo
 CC				= cc
-FLAGS			= -Wall -Werror -Wextra -pthread -g3
+FLAGS			= -Wall -Werror -Wextra -pthread -fsanitize=thread -g3
 RM				= rm -rf
 TXT				= *txt
 VCF				= valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
@@ -78,7 +78,7 @@ re:				fclean all
 					@echo "$(BLUE)Cleaned and rebuilt everything for philo$(DEF_COLOR)"
 
 norm:
-					@norminette $(SRC_DIR_P) $(NORM) | grep -v Norme -B1 || true
-					@echo "Norminet the cat says : $(RED)M$(ORANGE)e$(YELLOW)o$(GREEN)w$(CYAN) !$(BLUE)!$(MAGENTA)!$(DEF_COLOR)"
+					@norminette $(SRC_DIR_P) $(NORM) | grep -A1 -B1 Error | grep -v 'OK!' || true
+					@echo "$(RED)Norminet $(ORANGE)the $(YELLOW)cat $(GREEN)says$(CYAN): $(RED)M$(ORANGE)e$(YELLOW)o$(GREEN)w$(CYAN) !$(BLUE)!$(MAGENTA)!$(DEF_COLOR)"
 
 .PHONY: all re clean fclean norm bonus

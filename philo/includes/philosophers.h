@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:03:58 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/08/15 21:57:17 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/08 12:30:44 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <sys/time.h>
 # include <pthread.h>
 # include <stdint.h>
+# include <limits.h>
 
 # include "messages.h"
 
@@ -39,7 +40,8 @@ int			struct_init(t_philo *philo);
 /* *** parsing.c *** */
 
 int			ft_str_is_digit(char *s);
-int			ft_atoi(const char *str);
+long		ft_atol(const char *str);
+void		warning_limits(t_philo *philo);
 int			check_args(int ac, char **av, t_philo *philo);
 
 /* *** utils.c *** */
@@ -48,5 +50,6 @@ size_t		ft_strlen(const char *s);
 void		putstr_errendl(char *s);
 int			error_exit(char *s);
 uint64_t	time_in_ms(void);
+int			ft_usleep(__useconds_t microsec);
 
 #endif

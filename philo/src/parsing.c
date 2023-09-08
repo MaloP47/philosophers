@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 19:51:32 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/05 14:54:44 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/08 13:11:52 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	ft_str_is_digit(char *s)
 	return (1);
 }
 
-int	ft_atoi(const char *str)
+long	ft_atol(const char *str)
 {
 	int		i;
 	int		sign;
@@ -54,6 +54,20 @@ int	ft_atoi(const char *str)
 	return (nb * sign);
 }
 
+void	warning_limits(t_philo *philo)
+{
+	if (philo->nb_philo > 200)
+	{
+		write(1, NB_PHILO, ft_strlen(NB_PHILO));
+		ft_usleep(6000);
+	}
+	if (philo->ttd < 60 || philo->tte < 60 || philo->tts < 60)
+	{
+		write(1, MS_LOW, ft_strlen(MS_LOW));
+		ft_usleep(6000);
+	}
+}
+
 int	check_args(int ac, char **av, t_philo *philo)
 {
 	int	i;
@@ -64,15 +78,16 @@ int	check_args(int ac, char **av, t_philo *philo)
 		return (error_exit(NB_ARG), 0);
 	while (i < ac)
 	{
-		if (!ft_str_is_digit(av[i]) || ft_atoi(av[i]) == -2147483649);
+		if (!ft_str_is_digit(av[i]) || ft_atol(av[i]) == -2147483649)
 			return (error_exit(ARG_FORM), 0);
 		i++;
 	}
-	philo->nb_philo = ft_atoi(av[1]);
-	philo->ttd = ft_atoi(av[2]);
-	philo->tte = ft_atoi(av[3]);
-	philo->tts = ft_atoi(av[4]);
+	philo->nb_philo = ft_atol(av[1]);
+	philo->ttd = ft_atol(av[2]);
+	philo->tte = ft_atol(av[3]);
+	philo->tts = ft_atol(av[4]);
 	if (ac == 6)
-		philo->nb_lunch = ft_atoi(av[5]);
+		philo->nb_lunch = ft_atol(av[5]);
+	warning_limits(philo);
 	return (1);
 }
