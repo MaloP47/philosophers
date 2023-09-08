@@ -6,7 +6,7 @@
 #    By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 14:03:32 by mpeulet           #+#    #+#              #
-#    Updated: 2023/09/08 14:03:16 by mpeulet          ###   ########.fr        #
+#    Updated: 2023/09/08 14:02:37 by mpeulet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ ORANGE			= \033[38;5;214m
 
 #Variables
 
-NAME			= philo
+NAME			= philo_bonus
 CC				= cc
 FLAGS			= -Wall -Werror -Wextra -pthread -fsanitize=thread -g3
 RM				= rm -rf
@@ -44,7 +44,7 @@ INCLUDE			= 	-I ./includes/
 
 OBJ_DIR_P 		= obj/
 SRC_DIR_P		= src/
-SRC_FUNCTIONS_P	= init parsing utils
+SRC_FUNCTIONS_P	= init_bonus parsing_bonus utils_bonus
 
 PHIL_SRC		= $(addprefix $(SRC_DIR_P), $(addsuffix .c, $(SRC_FUNCTIONS_P)))
 PHIL_OBJ		= $(addprefix $(OBJ_DIR_P), $(addsuffix .o, $(SRC_FUNCTIONS_P)))
@@ -62,7 +62,7 @@ $(OBJ_DIR_P)%.o: $(SRC_DIR_P)%.c | $(IFMAKE_DIR_P)
 
 $(NAME): $(PHIL_OBJ)
 					@echo "$(GREY)Compiling philo...$(DEF_COLOR)"
-					@$(CC) $(FLAGS) -o $(NAME) src/main.c $(PHIL_OBJ) $(INCLUDE)
+					@$(CC) $(FLAGS) -o $(NAME) src/main_bonus.c $(PHIL_OBJ) $(INCLUDE)
 					@echo "$(GREEN)philo ready.$(DEF_COLOR)"
 
 clean:
@@ -81,4 +81,4 @@ norm:
 					@norminette $(SRC_DIR_P) $(NORM) | grep -A1 -B1 Error | grep -v 'OK!' || true
 					@echo "$(RED)Norminet $(ORANGE)the $(YELLOW)cat $(GREEN)says$(CYAN): $(RED)M$(ORANGE)e$(YELLOW)o$(GREEN)w$(CYAN) !$(BLUE)!$(MAGENTA)!$(DEF_COLOR)"
 
-.PHONY: all clean fclean re norm
+.PHONY: all re clean fclean norm
