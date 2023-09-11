@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 19:51:32 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/08 13:11:52 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/11 15:09:26 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,26 +54,26 @@ long	ft_atol(const char *str)
 	return (nb * sign);
 }
 
-void	warning_limits(t_philo *philo)
+void	warning_limits(t_data *data)
 {
-	if (philo->nb_philo > 200)
+	if (data->nb_philo > 200)
 	{
 		write(1, NB_PHILO, ft_strlen(NB_PHILO));
 		ft_usleep(6000);
 	}
-	if (philo->ttd < 60 || philo->tte < 60 || philo->tts < 60)
+	if (data->ttd < 60 || data->tte < 60 || data->tts < 60)
 	{
 		write(1, MS_LOW, ft_strlen(MS_LOW));
 		ft_usleep(6000);
 	}
 }
 
-int	check_args(int ac, char **av, t_philo *philo)
+int	check_args(int ac, char **av, t_data *data)
 {
 	int	i;
 
 	i = 1;
-	struct_init(philo);
+	struct_init(data);
 	if (ac < 5 || ac > 6)
 		return (error_exit(NB_ARG), 0);
 	while (i < ac)
@@ -82,12 +82,12 @@ int	check_args(int ac, char **av, t_philo *philo)
 			return (error_exit(ARG_FORM), 0);
 		i++;
 	}
-	philo->nb_philo = ft_atol(av[1]);
-	philo->ttd = ft_atol(av[2]);
-	philo->tte = ft_atol(av[3]);
-	philo->tts = ft_atol(av[4]);
+	data->nb_philo = ft_atol(av[1]);
+	data->ttd = ft_atol(av[2]);
+	data->tte = ft_atol(av[3]);
+	data->tts = ft_atol(av[4]);
 	if (ac == 6)
-		philo->nb_lunch = ft_atol(av[5]);
-	warning_limits(philo);
+		data->nb_lunch = ft_atol(av[5]);
+	warning_limits(data);
 	return (1);
 }

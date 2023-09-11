@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:03:58 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/08 12:30:44 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/11 15:30:51 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,25 +24,38 @@
 
 # include "messages.h"
 
+typedef struct s_data	t_data;
+
 typedef struct s_philo
 {
-	int	nb_philo;
-	int	ttd;
-	int	tte;
-	int	tts;
-	int	nb_lunch;
+	pthread_t		pid;
+	unsigned int	id;
+	unsigned int	eat_count;
+
+	t_data			*data;
 }		t_philo;
+
+typedef struct s_data
+{
+	uint64_t		start_time;
+	unsigned int	nb_philo;
+	uint64_t		ttd;
+	uint64_t		tte;
+	uint64_t		tts;
+	unsigned int	nb_lunch;
+	pthread_t		monitor;
+}		t_data;
 
 /* *** init.c *** */
 
-int			struct_init(t_philo *philo);
+int			struct_init(t_data *data);
 
 /* *** parsing.c *** */
 
 int			ft_str_is_digit(char *s);
 long		ft_atol(const char *str);
-void		warning_limits(t_philo *philo);
-int			check_args(int ac, char **av, t_philo *philo);
+void		warning_limits(t_data *data);
+int			check_args(int ac, char **av, t_data *main);
 
 /* *** utils.c *** */
 
