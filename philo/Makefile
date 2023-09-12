@@ -6,7 +6,7 @@
 #    By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/14 14:03:32 by mpeulet           #+#    #+#              #
-#    Updated: 2023/09/08 14:03:16 by mpeulet          ###   ########.fr        #
+#    Updated: 2023/09/12 15:36:51 by mpeulet          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ ORANGE			= \033[38;5;214m
 
 NAME			= philo
 CC				= cc
-FLAGS			= -Wall -Werror -Wextra -pthread -fsanitize=thread -g3
+FLAGS			= -Wall -Werror -Wextra -pthread #-fsanitize=thread -g3
 RM				= rm -rf
 TXT				= *txt
 VCF				= valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
@@ -44,7 +44,7 @@ INCLUDE			= 	-I ./includes/
 
 OBJ_DIR_P 		= obj/
 SRC_DIR_P		= src/
-SRC_FUNCTIONS_P	= init parsing utils
+SRC_FUNCTIONS_P	= parsing utils
 
 PHIL_SRC		= $(addprefix $(SRC_DIR_P), $(addsuffix .c, $(SRC_FUNCTIONS_P)))
 PHIL_OBJ		= $(addprefix $(OBJ_DIR_P), $(addsuffix .o, $(SRC_FUNCTIONS_P)))

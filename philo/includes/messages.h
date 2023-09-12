@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 09:52:49 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/11 11:31:34 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/12 16:02:08 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # define MAGENTA "\033[0;95m"
 # define CYAN "\033[0;96m"
 # define WHITE "\033[0;97m"
-
 # define ORANGE "\033[38;5;214m"
 
 # define ERR_TIME "\033[0;91mError : time_in_ms!\033[0;39m"
@@ -38,4 +37,10 @@
 # define NB_PHILO "\033[0;91mWARNING!!! : Too many philos! Quit\n\033[0;39m"
 # define MS_LOW "\033[0;91mWARNING!!! Do not test time < 60ms\n\033[0;39m"
 
+# define ERR_MALLOC_TID "\033[38;5;214mProgram quit following malloc\
+error while allocating data->tid.\033[0;39m"
+# define ERR_MALLOC_FORKS "\033[38;5;214mProgram quit following malloc\
+error while allocating data->forks.\033[0;39m"
+# define ERR_MALLOC_PHILOS "\033[38;5;214mProgram quit following malloc\
+error while allocating data->philos.\033[0;39m"
 #endif

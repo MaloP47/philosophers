@@ -6,66 +6,102 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 19:51:32 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/11 15:09:26 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/12 16:32:35 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	ft_str_is_digit(char *s)
+void	warning_limits(t_data *data)
+{
+	int	i;
+
+	if (data->nb_philo > 200)
+	{
+		i = -1;
+		while (++i < 3)
+		{
+			write(1, NB_PHILO, ft_strlen(NB_PHILO));
+			ft_usleep(3000);
+		}
+	}
+	if (data->ttd < 60 || data->tte < 60 || data->tts < 60)
+	{
+		i = -1;
+		while (++i < 3)
+		{
+			write(1, MS_LOW, ft_strlen(MS_LOW));
+			ft_usleep(3000);
+		}
+	}
+}
+
+int	alloc_init(t_data *data)
+{
+	pthread_mutex_init(&data->write, NULL);
+	pthread_mutex_init(&data->lock, NULL);
+	data->tid = malloc(sizeof(pthread_t) * data->nb_philo);
+	if (!data->tid)
+		return (clean_exit(ERR_MALLOC_TID, data));
+	data->forks = malloc(sizeof(pthread_t) * data->nb_philo);
+	if (!data->forks)
+		return (clean_exit(ERR_MALLOC_FORKS, data));
+	data->philos = malloc(sizeof(pthread_t) * data->nb_philo);
+	if (!data->philos)
+		return (clean_exit(ERR_MALLOC_PHILOS, data));
+	return (0);
+}
+
+void	init_forks(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	while (++i < (int)data->nb_philo)
+		pthread_mutex_init(&data->forks[i], NULL);
+	data->philos[0].left_fork = &data->forks[0];
+	data->philos[0].right_fork = &data->forks[data->nb_philo - 1];
+	i = 1;
+	while (i < (int)data->nb_philo)
+	{
+		data->philos[i].left_fork = &data->forks[i];
+		data->philos[i].right_fork = &data->forks[i - 1];
+		i++;
+	}
+}
+
+void	init_philos(t_data *data)
 {
 	int	i;
 
 	i = 0;
-	while (s[i])
+	while (i < (int)data->nb_philo)
 	{
-		if (!(s[i] >= 48 && s[i] <= 57))
-			return (0);
+		data->philos[i].data = data;
+		data->philos[i].id = i + 1;
+		data->philos[i].time_left = data->ttd;
+		data->philos[i].eat_count = 0;
+		pthread_mutex_init(&data->philos[i].lock, NULL);
 		i++;
 	}
-	return (1);
 }
 
-long	ft_atol(const char *str)
+int	struct_init(int ac, char **av, t_data *data)
 {
-	int		i;
-	int		sign;
-	long	nb;
-
-	if (!str)
+	data->nb_philo = ft_atol(av[1]);
+	data->ttd = ft_atol(av[2]);
+	data->tte = ft_atol(av[3]);
+	data->tts = ft_atol(av[4]);
+	if (ac == 6)
+		data->nb_lunch = ft_atol(av[5]);
+	else
+		data->nb_lunch = -1;
+	warning_limits(data);
+	if(alloc_init(data))
 		return (0);
-	i = 0;
-	nb = 0;
-	sign = 1;
-	while (str[i] && ((str[i] >= 9 && str[i] <= 13) || (str[i] == 32)))
-		i++;
-	if (str[i] == 43 || str[i] == 45)
-	{
-		if (str[i++] == 45)
-			sign *= -1;
-	}
-	while (str[i] && (str[i] >= 48 && str[i] <= 57))
-	{
-		nb = (nb * 10) + (str[i] - 48);
-		if (nb * sign > INT_MAX || nb * sign < INT_MIN)
-			return (-2147483649);
-		i++;
-	}
-	return (nb * sign);
-}
-
-void	warning_limits(t_data *data)
-{
-	if (data->nb_philo > 200)
-	{
-		write(1, NB_PHILO, ft_strlen(NB_PHILO));
-		ft_usleep(6000);
-	}
-	if (data->ttd < 60 || data->tte < 60 || data->tts < 60)
-	{
-		write(1, MS_LOW, ft_strlen(MS_LOW));
-		ft_usleep(6000);
-	}
+	init_forks(data);
+	init_philos(data);
+	return (1);
 }
 
 int	check_args(int ac, char **av, t_data *data)
@@ -73,21 +109,16 @@ int	check_args(int ac, char **av, t_data *data)
 	int	i;
 
 	i = 1;
-	struct_init(data);
+	memset(data, 0, sizeof(t_data));
 	if (ac < 5 || ac > 6)
-		return (error_exit(NB_ARG), 0);
+		return (putstr_errendl(NB_ARG), 0);
 	while (i < ac)
 	{
 		if (!ft_str_is_digit(av[i]) || ft_atol(av[i]) == -2147483649)
-			return (error_exit(ARG_FORM), 0);
+			return (putstr_errendl(ARG_FORM), 0);
 		i++;
 	}
-	data->nb_philo = ft_atol(av[1]);
-	data->ttd = ft_atol(av[2]);
-	data->tte = ft_atol(av[3]);
-	data->tts = ft_atol(av[4]);
-	if (ac == 6)
-		data->nb_lunch = ft_atol(av[5]);
-	warning_limits(data);
+	if (!struct_init(ac, av, data))
+		return (0);
 	return (1);
 }
