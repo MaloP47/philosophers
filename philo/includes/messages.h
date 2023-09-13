@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 09:52:49 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/12 16:02:08 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/13 14:08:21 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # define CYAN "\033[0;96m"
 # define WHITE "\033[0;97m"
 # define ORANGE "\033[38;5;214m"
+# define BLINK_RED "\033[31;5m"
 
 # define ERR_TIME "\033[0;91mError : time_in_ms!\033[0;39m"
 
@@ -43,4 +44,13 @@ error while allocating data->tid.\033[0;39m"
 error while allocating data->forks.\033[0;39m"
 # define ERR_MALLOC_PHILOS "\033[38;5;214mProgram quit following malloc\
 error while allocating data->philos.\033[0;39m"
+
+# define STATE_CHANGE "Time: [%lu] || Philo: [%d] %s"
+# define DIED "\033[31;5mDIED.\n\033[0;39m"
+# define EATING "\033[0;93mis eating.\n\033[0;39m"
+# define SLEEPING "\033[0;95mis sleeping.\n\033[0;39m"
+# define THINKING "\033[0;92mis thinking.\n\033[0;39m"
+# define FORK_R "\033[0;94mhas taken a fork (right).\n\033[0;39m"
+# define FORK_L "\033[0;96mhas taken a fork (left).\n\033[0;39m"
+
 #endif

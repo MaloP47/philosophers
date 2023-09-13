@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:03:58 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/12 16:27:55 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/13 16:04:30 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,12 @@ typedef struct s_data	t_data;
 typedef struct s_philo
 {
 	t_data			*data;
-	
+
 	pthread_t		philo_tid;
-	
+
 	unsigned int	id;
 	unsigned int	eat_count;
+	unsigned int	eating;
 
 	uint64_t		time_left;
 
@@ -50,6 +51,7 @@ typedef struct s_data
 
 	unsigned int	nb_philo;
 	int				nb_lunch;
+	int				dead_philo;
 
 	t_philo			*philos;
 
@@ -61,7 +63,7 @@ typedef struct s_data
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	lock;
 	pthread_mutex_t	write;
-	
+
 	pthread_t		monitor;
 }		t_data;
 
@@ -70,6 +72,13 @@ typedef struct s_data
 int			struct_init(int ac, char **av, t_data *data);
 void		warning_limits(t_data *data);
 int			check_args(int ac, char **av, t_data *main);
+
+/* *** routine.c *** */
+
+void		print_state_change(char *s, t_philo *philo);
+void		lock_forks(t_philo *philo);
+void		unlock_forks(t_philo *philo);
+void		lunch_time(t_philo *philo);
 
 /* *** utils.c *** */
 
@@ -80,7 +89,6 @@ void		free_all(t_data *data);
 void		destroy_mutex(t_data *data);
 void		putstr_errendl(char *s);
 int			clean_exit(char *s, t_data *data);
-void		*ft_memset(void *s, int c, size_t n);
 uint64_t	time_in_ms(void);
 int			ft_usleep(__useconds_t microsec);
 

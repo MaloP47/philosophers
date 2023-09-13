@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 19:51:32 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/12 16:32:35 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/13 10:30:19 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,10 @@ int	alloc_init(t_data *data)
 	data->tid = malloc(sizeof(pthread_t) * data->nb_philo);
 	if (!data->tid)
 		return (clean_exit(ERR_MALLOC_TID, data));
-	data->forks = malloc(sizeof(pthread_t) * data->nb_philo);
+	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
 	if (!data->forks)
 		return (clean_exit(ERR_MALLOC_FORKS, data));
-	data->philos = malloc(sizeof(pthread_t) * data->nb_philo);
+	data->philos = malloc(sizeof(t_philo) * data->nb_philo);
 	if (!data->philos)
 		return (clean_exit(ERR_MALLOC_PHILOS, data));
 	return (0);
