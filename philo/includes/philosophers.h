@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:03:58 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/13 16:04:30 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/14 18:43:06 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,9 @@ typedef struct s_data
 	pthread_t		*tid;
 
 	unsigned int	nb_philo;
-	int				nb_lunch;
+	unsigned int	nb_lunch;
 	int				dead_philo;
+	unsigned int	count_down;
 
 	t_philo			*philos;
 
@@ -79,6 +80,9 @@ void		print_state_change(char *s, t_philo *philo);
 void		lock_forks(t_philo *philo);
 void		unlock_forks(t_philo *philo);
 void		lunch_time(t_philo *philo);
+void		*assistant(void	*assistant_void);
+void		*routine(void *philo_void);
+void		multi_threading(t_data *data);
 
 /* *** utils.c *** */
 

@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 19:51:32 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/13 10:30:19 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/14 14:38:39 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,11 @@ int	struct_init(int ac, char **av, t_data *data)
 	data->tte = ft_atol(av[3]);
 	data->tts = ft_atol(av[4]);
 	if (ac == 6)
+	{
 		data->nb_lunch = ft_atol(av[5]);
+		data->count_down = 1;
+		
+	}
 	else
 		data->nb_lunch = -1;
 	warning_limits(data);
