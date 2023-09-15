@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 09:52:49 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/14 17:25:15 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/15 13:28:13 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ error while allocating data->forks.\033[0;39m"
 # define ERR_MALLOC_PHILOS "\033[38;5;214mProgram quit following malloc\
 error while allocating data->philos.\033[0;39m"
 
-# define STATE_CHANGE "[%lu] [%d] %s"
-# define DIED "\033[31;5mdied.\n\033[0;39m"
-# define EATING "\033[0;93mis eating.\n\033[0;39m"
-# define SLEEPING "\033[0;95mis sleeping.\n\033[0;39m"
-# define THINKING "\033[0;92mis thinking.\n\033[0;39m"
-# define FORK_R "\033[0;94mhas taken a fork (right).\n\033[0;39m"
-# define FORK_L "\033[0;96mhas taken a fork (left).\n\033[0;39m"
+# define STATE_CHANGE "%lu %d %s"
+# define DIED "\033[31;5mdied\n\033[0;39m"
+# define EATING "\033[0;93mis eating\n\033[0;39m"
+# define SLEEPING "\033[0;95mis sleeping\n\033[0;39m"
+# define THINKING "\033[0;92mis thinking\n\033[0;39m"
+# define FORK_R "\033[0;94mhas taken a fork\n\033[0;39m"
+# define FORK_L "\033[0;96mhas taken a fork\n\033[0;39m"
 
 #endif

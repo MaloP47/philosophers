@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 10:08:27 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/15 14:33:46 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/15 10:49:52 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,16 @@ size_t	ft_strlen(const char *s)
 	while (s[i])
 		i++;
 	return (i);
+}
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	size_t	i;
+
+	i = 0;
+	while (s1[i] && s2[i] && s1[i] == s2[i])
+		i++;
+	return (((unsigned char *)s1)[i] - ((unsigned char *)s2)[i]);
 }
 
 int	ft_str_is_digit(char *s)
@@ -64,4 +74,64 @@ long	ft_atol(char *str)
 		i++;
 	}
 	return (nb * sign);
+}
+
+void	free_all(t_data *data)
+{
+	if (data->tid)
+		free(data->tid);
+	if (data->forks)
+		free(data->forks);
+	if (data->philos)
+		free(data->philos);
+}
+
+void	destroy_mutex(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	while (++i < (int)data->nb_philo)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&data->philos[i].lock);
+	}
+	pthread_mutex_destroy(&data->write);
+	pthread_mutex_destroy(&data->lock);
+}
+
+void	putstr_errendl(char *s)
+{
+	if (!s)
+		return ;
+	write(2, s, ft_strlen(s));
+	write(2, "\n", 1);
+}
+
+int	clean_exit(char *s, t_data *data)
+{
+	putstr_errendl(s);
+	if (data)
+		destroy_mutex(data);
+	free_all(data);
+	return (1);
+}
+
+uint64_t	time_in_ms(void)
+{
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, 0))
+		putstr_errendl(ERR_TIME);
+	return (((uint64_t)tv.tv_sec * 1000) + ((uint64_t)tv.tv_usec / 1000));
+}
+
+int	ft_usleep(__useconds_t microsec)
+{
+	uint64_t	time_ms;
+
+	time_ms = time_in_ms();
+	while (time_in_ms() - time_ms < microsec)
+		usleep(microsec / 10);
+	return (1);
 }

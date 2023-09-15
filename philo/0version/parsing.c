@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 19:51:32 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/15 14:44:50 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/14 14:38:39 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,21 @@ int	alloc_init(t_data *data)
 	return (0);
 }
 
-void	assign_forks(t_philo *philo)
+void	init_forks(t_data *data)
 {
-	philo->forks[0] = philo->id;
-	philo->forks[1] = philo-> id % philo->data->nb_philo;
-	if (philo->id % 2)
+	int	i;
+
+	i = -1;
+	while (++i < (int)data->nb_philo)
+		pthread_mutex_init(&data->forks[i], NULL);
+	data->philos[0].left_fork = &data->forks[0];
+	data->philos[0].right_fork = &data->forks[data->nb_philo - 1];
+	i = 1;
+	while (i < (int)data->nb_philo)
 	{
-		philo->forks[1] = philo->id;
-		philo->forks[0] = philo-> id % philo->data->nb_philo;
+		data->philos[i].left_fork = &data->forks[i];
+		data->philos[i].right_fork = &data->forks[i - 1];
+		i++;
 	}
 }
 
@@ -74,9 +81,7 @@ void	init_philos(t_data *data)
 		data->philos[i].id = i + 1;
 		data->philos[i].time_left = data->ttd;
 		data->philos[i].eat_count = 0;
-		assign_forks(&data->philos[i]);
 		pthread_mutex_init(&data->philos[i].lock, NULL);
-		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
 	}
 }
@@ -88,15 +93,36 @@ int	struct_init(int ac, char **av, t_data *data)
 	data->tte = ft_atol(av[3]);
 	data->tts = ft_atol(av[4]);
 	if (ac == 6)
+	{
 		data->nb_lunch = ft_atol(av[5]);
+		data->count_down = 1;
+		
+	}
 	else
 		data->nb_lunch = -1;
-	if (data->nb_lunch == 0);
-		return (0);
 	warning_limits(data);
 	if(alloc_init(data))
 		return (0);
+	init_forks(data);
 	init_philos(data);
 	return (1);
 }
 
+int	check_args(int ac, char **av, t_data *data)
+{
+	int	i;
+
+	i = 1;
+	memset(data, 0, sizeof(t_data));
+	if (ac < 5 || ac > 6)
+		return (putstr_errendl(NB_ARG), 0);
+	while (i < ac)
+	{
+		if (!ft_str_is_digit(av[i]) || ft_atol(av[i]) == -2147483649)
+			return (putstr_errendl(ARG_FORM), 0);
+		i++;
+	}
+	if (!struct_init(ac, av, data))
+		return (0);
+	return (1);
+}

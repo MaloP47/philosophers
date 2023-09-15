@@ -6,17 +6,33 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 12:44:43 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/15 15:25:30 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/15 13:15:53 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
+void	print_state_change(char *s, t_philo *philo)
+{
+	uint64_t	time;
+
+	time = time_in_ms() - philo->data->start_time;
+	pthread_mutex_lock(&philo->data->write);
+	if (!strcmp(DIED, s) && !philo->data->dead_philo)
+	{
+		printf(STATE_CHANGE, time, philo->id, DIED);
+		philo->data->dead_philo = 1;
+	}
+	if (!philo->data->dead_philo)
+		printf(STATE_CHANGE, time, philo->id, s);
+	pthread_mutex_unlock(&philo->data->write);
+}
+
 void	lock_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->forks[0]);
+	pthread_mutex_lock(philo->right_fork);
 	print_state_change(FORK_R, philo);
-	pthread_mutex_lock(philo->fork[1]);
+	pthread_mutex_lock(philo->left_fork);
 	print_state_change(FORK_L, philo);
 }
 
@@ -76,4 +92,23 @@ void	*routine(void *philo_void)
 	}
 	pthread_join(philo->philo_tid, NULL);
 	return (0);
+}
+
+void	multi_threading(t_data *data)
+{
+	int			i;
+
+	i = -1;
+	data->start_time = time_in_ms();
+	while (++i < (int)data->nb_philo)
+	{
+		pthread_create(&data->tid[i], NULL, &routine, &data->philos[i]);
+		ft_usleep(100);
+	}
+	i = -1;
+	while (++i < (int)data->nb_philo)
+	{
+		pthread_join(data->tid[i], NULL);
+		ft_usleep(100);
+	}
 }
