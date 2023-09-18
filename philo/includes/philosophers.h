@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:03:58 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/15 15:58:14 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/18 13:32:17 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,10 @@ typedef struct s_data
 
 	unsigned int	nb_philo;
 	unsigned int	nb_lunch;
-	int				dead_philo;
+	unsigned int	dead_philo;
 	unsigned int	count_down;
 
-	t_philo			*philos;
+	t_philo			**philos;
 
 	uint64_t		start_time;
 	uint64_t		ttd;
@@ -63,18 +63,8 @@ typedef struct s_data
 	pthread_mutex_t	lock;
 	pthread_mutex_t	write;
 
-	pthread_t		monitor;
+	pthread_t		servant;
 }		t_data;
-
-typedef enum e_action
-{
-	E_DIED,
-	E_EATING,
-	E_SLEEPING,
-	E_THINKING,
-	E_FORK_R,
-	E_FORK_L	
-}		t_action;
 
 /* *** clean_exit.c *** */
 
@@ -99,21 +89,22 @@ int			struct_init(int ac, char **av, t_data *data);
 /* *** print_and_time_management.c *** */
 
 void		print_state_change(char *s, t_philo *philo);
-void		define_printing(t_philo *philo, int	dead, t_action action);
+void		define_printing(t_philo *philo, int	dead, char *action);
 uint64_t	time_in_ms(void);
 int			ft_usleep(__useconds_t microsec);
 void		break_time(t_data *table, uint64_t action_time);
 
 /* *** routine.c *** */
-
-void		lock_forks(t_philo *philo);
-void		unlock_forks(t_philo *philo);
 void		lunch_time(t_philo *philo);
-void		*assistant(void	*assistant_void);
+void		waiting_time(t_philo *philo, int mute);
+void		*case_one(t_philo *philo);
 void		*routine(void *philo_void);
 
 /* *** servant.c *** */
 
+void		philo_died(t_data *data, int dead);
+int			notify_dead_philo(t_philo *philo);
+int			monitoring_table(t_data *data);
 void		*servant(void *servant);
 
 /* *** utils.c *** */

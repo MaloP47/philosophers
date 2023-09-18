@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 14:04:09 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/15 14:05:23 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/18 15:04:37 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,22 @@
 
 void	free_all(t_data *data)
 {
+	int	i;
+
+	i = -1;
 	if (data->tid)
 		free(data->tid);
 	if (data->forks)
 		free(data->forks);
 	if (data->philos)
+	{
+		while (++i < (int)data->nb_lunch)
+		{
+			if (data->philos[i])
+				free(data->philos[i]);
+		}
 		free(data->philos);
+	}
 }
 
 void	destroy_mutex(t_data *data)
@@ -30,7 +40,7 @@ void	destroy_mutex(t_data *data)
 	while (++i < (int)data->nb_philo)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
-		pthread_mutex_destroy(&data->philos[i].lock);
+		pthread_mutex_destroy(&data->philos[i]->lock);
 	}
 	pthread_mutex_destroy(&data->write);
 	pthread_mutex_destroy(&data->lock);

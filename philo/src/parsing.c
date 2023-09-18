@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 19:51:32 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/15 14:44:50 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/18 15:04:49 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,9 @@ void	warning_limits(t_data *data)
 
 int	alloc_init(t_data *data)
 {
+	int	i;
+
+	i = -1;
 	pthread_mutex_init(&data->write, NULL);
 	pthread_mutex_init(&data->lock, NULL);
 	data->tid = malloc(sizeof(pthread_t) * data->nb_philo);
@@ -46,9 +49,15 @@ int	alloc_init(t_data *data)
 	data->forks = malloc(sizeof(pthread_mutex_t) * data->nb_philo);
 	if (!data->forks)
 		return (clean_exit(ERR_MALLOC_FORKS, data));
-	data->philos = malloc(sizeof(t_philo) * data->nb_philo);
+	data->philos = malloc(sizeof(t_philo *) * data->nb_philo);
 	if (!data->philos)
 		return (clean_exit(ERR_MALLOC_PHILOS, data));
+	while (++i < (int)data->nb_philo)
+	{
+		data->philos[i] = malloc(sizeof(t_philo));
+		if (!data->philos[i])
+			return (clean_exit(ERR_MALLOC_PHILOS, data));
+	}
 	return (0);
 }
 
@@ -70,12 +79,12 @@ void	init_philos(t_data *data)
 	i = 0;
 	while (i < (int)data->nb_philo)
 	{
-		data->philos[i].data = data;
-		data->philos[i].id = i + 1;
-		data->philos[i].time_left = data->ttd;
-		data->philos[i].eat_count = 0;
-		assign_forks(&data->philos[i]);
-		pthread_mutex_init(&data->philos[i].lock, NULL);
+		data->philos[i]->data = data;
+		data->philos[i]->id = i + 1;
+		data->philos[i]->time_left = data->ttd;
+		data->philos[i]->eat_count = 0;
+		assign_forks(data->philos[i]);
+		pthread_mutex_init(&data->philos[i]->lock, NULL);
 		pthread_mutex_init(&data->forks[i], NULL);
 		i++;
 	}
@@ -91,7 +100,7 @@ int	struct_init(int ac, char **av, t_data *data)
 		data->nb_lunch = ft_atol(av[5]);
 	else
 		data->nb_lunch = -1;
-	if (data->nb_lunch == 0);
+	if (data->nb_lunch == 0)
 		return (0);
 	warning_limits(data);
 	if(alloc_init(data))

@@ -6,74 +6,78 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 12:44:43 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/15 15:25:30 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/18 13:33:26 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	lock_forks(t_philo *philo)
-{
-	pthread_mutex_lock(philo->forks[0]);
-	print_state_change(FORK_R, philo);
-	pthread_mutex_lock(philo->fork[1]);
-	print_state_change(FORK_L, philo);
-}
-
-void	unlock_forks(t_philo *philo)
-{
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
-	print_state_change(SLEEPING, philo);
-	ft_usleep(philo->data->tts);
-}
-
 void	lunch_time(t_philo *philo)
 {
-	lock_forks(philo);
+	pthread_mutex_lock(&philo->data->forks[philo->forks[0]]);
+	define_printing(philo, 0, FORK_R);
+	pthread_mutex_lock(&philo->data->forks[philo->forks[1]]);
+	define_printing(philo, 0, FORK_L);
+	define_printing(philo, 0, EATING);
 	pthread_mutex_lock(&philo->lock);
-	philo->eat_count = 1;
-	philo->time_left = time_in_ms() + philo->data->ttd;
-	print_state_change(EATING, philo);
-	philo->eat_count++;
-	ft_usleep(philo->data->tte);
-	philo->eat_count = 1;
+	philo->time_left = time_in_ms();
 	pthread_mutex_unlock(&philo->lock);
-	unlock_forks(philo);
+	break_time(philo->data, philo->data->tte);
+	if (!monitoring_table(philo->data))
+	{
+		pthread_mutex_lock(&philo->lock);
+		philo->eat_count++;
+		pthread_mutex_unlock(&philo->lock);
+	}
+	define_printing(philo, 0, SLEEPING);
+	pthread_mutex_unlock(&philo->data->forks[philo->forks[1]]);
+	pthread_mutex_unlock(&philo->data->forks[philo->forks[0]]);
+	break_time(philo->data, philo->data->tts);
 }
 
-void	*assistant(void	*assistant_void)
+void	waiting_time(t_philo *philo, int mute)
 {
-	t_philo	*assistant;
-	
-	assistant = (t_philo *)assistant_void;
-	while (assistant->data->dead_philo == 0)
-	{
-		pthread_mutex_lock(&assistant->lock);
-		if (time_in_ms() >= assistant->time_left && assistant->eating == 0)
-			print_state_change(DIED, assistant);
-		if (assistant->data->count_down == 1)
-		{
-			if (assistant->eat_count == assistant->data->nb_lunch)
-					assistant->data->dead_philo = 1; 
-		}
-		pthread_mutex_unlock(&assistant->lock);
-	}
+	uint64_t	ttt;
+
+	pthread_mutex_lock(&philo->lock);
+	ttt = (philo->data->ttd - (time_in_ms() - philo->time_left)
+	- philo->data->tte) / 2;
+	pthread_mutex_unlock(&philo->lock);
+	if (!ttt && mute)
+		ttt = 1;
+	if (ttt > 600)
+		ttt = 200;
+	if (!mute)
+		define_printing(philo, 0, THINKING);
+	break_time(philo->data, ttt);
+}
+
+void	*case_one(t_philo *philo)
+{
+	define_printing(philo, 0, FORK_R);
+	ft_usleep(philo->data->ttd);
+	define_printing(philo, 0, DIED);
 	return (0);
 }
 
 void	*routine(void *philo_void)
 {
-	t_philo	*philo;
+	t_philo *philo;
 
 	philo = (t_philo *)philo_void;
-	philo->time_left = philo->data->ttd + time_in_ms();
-	pthread_create(&philo->philo_tid, NULL, &assistant, (void *)philo);
-	while (philo->data->dead_philo == 0)
+	pthread_mutex_lock(&philo->lock);
+	philo->time_left = philo->data->start_time;
+	pthread_mutex_unlock(&philo->lock);
+	if (!philo->data->ttd)
+		return (0);
+	if (philo->data->nb_philo == 1)
+		return (case_one(philo));
+	else if (philo->id % 2)
+		waiting_time(philo, 1);
+	while (!monitoring_table(philo->data))
 	{
 		lunch_time(philo);
-		print_state_change(THINKING, philo);
+		waiting_time(philo, 0);
 	}
-	pthread_join(philo->philo_tid, NULL);
 	return (0);
 }

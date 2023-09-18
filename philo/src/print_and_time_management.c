@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_and_time_mangement.c                         :+:      :+:    :+:   */
+/*   print_and_time_management.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/15 14:32:49 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/15 15:57:47 by mpeulet          ###   ########.fr       */
+/*   Created: 2023/09/18 13:30:06 by mpeulet           #+#    #+#             */
+/*   Updated: 2023/09/18 13:30:11 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,15 @@ void	print_state_change(char *s, t_philo *philo)
 	printf(STATE_CHANGE, time, philo->id, s);
 }
 
-void	define_printing(t_philo *philo, int	dead, t_action action)
+void	define_printing(t_philo *philo, int	dead, char *action)
 {
 	pthread_mutex_lock(&philo->data->write);
-	if (action == E_DIED)
-		print_state_change(DIED, philo);
-	else if (action == E_EATING)
-		print_state_change(EATING, philo);
-	else if (action == E_SLEEPING)
-		print_state_change(SLEEPING, philo);
-	else if (action == E_THINKING)
-		print_state_change(THINKING, philo);
-	else if (action == E_FORK_L || action == E_FORK_R )
-		print_state_change(FORK_L, philo);
-		else if (action == E_FORK_R)
-		print_state_change(FORK_R, philo);
+	if (monitoring_table(philo->data) && !dead)
+	{
+		pthread_mutex_unlock(&philo->data->write);
+		return ;
+	}
+	print_state_change(action, philo);
 	pthread_mutex_unlock(&philo->data->write);
 }
 
@@ -57,13 +51,15 @@ int	ft_usleep(__useconds_t microsec)
 	return (1);
 }
 
-void	break_time(t_data *table, uint64_t action_time)
+void	break_time(t_data *data, uint64_t action_time)
 {
 	uint64_t	break_time;
 
 	break_time = time_in_ms() + action_time;
 	while (time_in_ms() < break_time)
 	{
+		if (monitoring_table(data))
+			break ;
 		ft_usleep(100);
 	}
 }
