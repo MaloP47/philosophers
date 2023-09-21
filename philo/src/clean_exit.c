@@ -5,32 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/15 14:04:09 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/18 15:04:37 by mpeulet          ###   ########.fr       */
+/*   Created: 2023/09/21 13:10:45 by mpeulet           #+#    #+#             */
+/*   Updated: 2023/09/21 13:11:29 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
-
-void	free_all(t_data *data)
-{
-	int	i;
-
-	i = -1;
-	if (data->tid)
-		free(data->tid);
-	if (data->forks)
-		free(data->forks);
-	if (data->philos)
-	{
-		while (++i < (int)data->nb_lunch)
-		{
-			if (data->philos[i])
-				free(data->philos[i]);
-		}
-		free(data->philos);
-	}
-}
 
 void	destroy_mutex(t_data *data)
 {
@@ -39,11 +19,12 @@ void	destroy_mutex(t_data *data)
 	i = -1;
 	while (++i < (int)data->nb_philo)
 	{
-		pthread_mutex_destroy(&data->forks[i]);
-		pthread_mutex_destroy(&data->philos[i]->lock);
+		pthread_mutex_destroy(&data->philo[i].fork_left);
+		pthread_mutex_destroy(&data->philo[i].lunch_time);
 	}
 	pthread_mutex_destroy(&data->write);
-	pthread_mutex_destroy(&data->lock);
+	pthread_mutex_destroy(&data->one_dead);
+	pthread_mutex_destroy(&data->nb_of_lunch_reached);
 }
 
 void	putstr_errendl(char *s)
@@ -59,6 +40,7 @@ int	clean_exit(char *s, t_data *data)
 	putstr_errendl(s);
 	if (data)
 		destroy_mutex(data);
-	free_all(data);
+	if (data->philo)
+		free(data->philo);
 	return (1);
 }

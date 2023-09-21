@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/15 09:52:49 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/18 11:59:04 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/21 16:35:25 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,40 @@
 # define NB_PHILO "\033[0;91mWARNING!!! : Too many philos! Quit\n\033[0;39m"
 # define MS_LOW "\033[0;91mWARNING!!! Do not test time < 60ms\n\033[0;39m"
 
-# define ERR_MALLOC_TID "\033[38;5;214mProgram quit following malloc\
-error while allocating data->tid.\033[0;39m"
-# define ERR_MALLOC_FORKS "\033[38;5;214mProgram quit following malloc\
-error while allocating data->forks.\033[0;39m"
-# define ERR_MALLOC_PHILOS "\033[38;5;214mProgram quit following malloc\
+# define ERR_INIT_FORK "\033[38;5;214mProgram quit following mutex_init \
+error while initializing philo->fork_left.\033[0;39m"
+# define ERR_INIT_LOCK "\033[38;5;214mProgram quit following mutex_init \
+error while initializing philo->lock.\033[0;39m"
+
+# define ERR_INIT_DWRITE "\033[38;5;214mProgram quit following mutex_init \
+error while initializing data->write.\033[0;39m"
+# define ERR_INIT_DLOCK "\033[38;5;214mProgram quit following mutex_init \
+error while initializing data->lock.\033[0;39m"
+# define ERR_INIT_DNBL "\033[38;5;214mProgram quit following mutex_init \
+error while initializing data->nb_lunch_reached.\033[0;39m"
+
+# define ERR_CREATE_TH "\033[38;5;214mProgram quit following creating threads \
+error.\033[0;39m"
+# define ERR_JOIN_TH "\033[38;5;214mProgram quit following joining threads \
+error.\033[0;39m"
+
+# define ERR_MALLOC_PHILOS "\033[38;5;214mProgram quit following malloc \
 error while allocating data->philos.\033[0;39m"
 
 # define STATE_CHANGE "%lu %d %s"
-# define DIED "\033[31;5mdied\n\033[0;39m"
+
+# define DIED "died\n"
+# define EATING "is eating\n"
+# define SLEEPING "is sleeping\n"
+# define THINKING "is thinking\n"
+# define FORK_R "has taken a fork\n"
+# define FORK_L "has taken a fork\n"
+
+/*# define DIED "\033[31;5mdied\n\033[0;39m"
 # define EATING "\033[0;93mis eating\n\033[0;39m"
 # define SLEEPING "\033[0;95mis sleeping\n\033[0;39m"
 # define THINKING "\033[0;92mis thinking\n\033[0;39m"
-# define FORK_R "\033[0;94mhas taken a fork (R)\n\033[0;39m"
-# define FORK_L "\033[0;96mhas taken a fork (L)\n\033[0;39m"
+# define FORK_R "\033[0;94mhas taken a fork\n\033[0;39m"
+# define FORK_L "\033[0;96mhas taken a forkn\033[0;39m"*/
 
 #endif

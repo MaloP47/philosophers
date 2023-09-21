@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/15 10:08:27 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/15 14:33:46 by mpeulet          ###   ########.fr       */
+/*   Created: 2023/09/21 13:08:13 by mpeulet           #+#    #+#             */
+/*   Updated: 2023/09/21 13:09:42 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,32 @@ long	ft_atol(char *str)
 		i++;
 	}
 	return (nb * sign);
+}
+
+uint64_t	time_in_ms(void)
+{
+	struct timeval	tv;
+
+	if (gettimeofday(&tv, 0))
+		putstr_errendl(ERR_TIME);
+	return (((uint64_t)tv.tv_sec * 1000) + ((uint64_t)tv.tv_usec / 1000));
+}
+
+int	ft_usleep(t_data *data, __useconds_t microsec)
+{
+	uint64_t	time_ms;
+
+	time_ms = time_in_ms();
+	while (time_in_ms() - time_ms < microsec)
+	{
+		pthread_mutex_lock(&data->one_dead);
+		if (data->dead_philo)
+		{
+			pthread_mutex_unlock(&data->one_dead);
+			return (0);
+		}
+		pthread_mutex_unlock(&data->one_dead);
+		usleep(10);
+	}
+	return (1);
 }

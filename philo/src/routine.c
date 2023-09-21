@@ -5,79 +5,94 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/13 12:44:43 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/18 13:33:26 by mpeulet          ###   ########.fr       */
+/*   Created: 2023/09/21 13:15:31 by mpeulet           #+#    #+#             */
+/*   Updated: 2023/09/21 17:04:42 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	lunch_time(t_philo *philo)
+int	philo_died(t_data *data)
 {
-	pthread_mutex_lock(&philo->data->forks[philo->forks[0]]);
-	define_printing(philo, 0, FORK_R);
-	pthread_mutex_lock(&philo->data->forks[philo->forks[1]]);
-	define_printing(philo, 0, FORK_L);
-	define_printing(philo, 0, EATING);
-	pthread_mutex_lock(&philo->lock);
-	philo->time_left = time_in_ms();
-	pthread_mutex_unlock(&philo->lock);
-	break_time(philo->data, philo->data->tte);
-	if (!monitoring_table(philo->data))
+	int	died;
+
+	pthread_mutex_lock(&data->one_dead);
+	died = data->dead_philo;
+	pthread_mutex_unlock(&data->one_dead);
+	return (died);
+}
+
+int	grab_forks(t_data *data, t_philo *philo)
+{
+	if (philo->id % 2)
 	{
-		pthread_mutex_lock(&philo->lock);
-		philo->eat_count++;
-		pthread_mutex_unlock(&philo->lock);
+		if (&philo->fork_left == philo->fork_right)
+		{
+			define_printing(data, philo, FORK_L);
+			return (1);
+		}
+		pthread_mutex_lock(&philo->fork_left);
+		define_printing(data, philo, FORK_L);
+		pthread_mutex_lock(philo->fork_right);
+		define_printing(data, philo, FORK_R);
 	}
-	define_printing(philo, 0, SLEEPING);
-	pthread_mutex_unlock(&philo->data->forks[philo->forks[1]]);
-	pthread_mutex_unlock(&philo->data->forks[philo->forks[0]]);
-	break_time(philo->data, philo->data->tts);
-}
-
-void	waiting_time(t_philo *philo, int mute)
-{
-	uint64_t	ttt;
-
-	pthread_mutex_lock(&philo->lock);
-	ttt = (philo->data->ttd - (time_in_ms() - philo->time_left)
-	- philo->data->tte) / 2;
-	pthread_mutex_unlock(&philo->lock);
-	if (!ttt && mute)
-		ttt = 1;
-	if (ttt > 600)
-		ttt = 200;
-	if (!mute)
-		define_printing(philo, 0, THINKING);
-	break_time(philo->data, ttt);
-}
-
-void	*case_one(t_philo *philo)
-{
-	define_printing(philo, 0, FORK_R);
-	ft_usleep(philo->data->ttd);
-	define_printing(philo, 0, DIED);
+	else
+	{
+		pthread_mutex_lock(philo->fork_right);
+		define_printing(data, philo, FORK_R);
+		pthread_mutex_lock(&philo->fork_left);
+		define_printing(data, philo, FORK_L);
+	}
 	return (0);
 }
 
-void	*routine(void *philo_void)
+int	lunch_time(t_data *data, t_philo *philo)
 {
-	t_philo *philo;
-
-	philo = (t_philo *)philo_void;
-	pthread_mutex_lock(&philo->lock);
-	philo->time_left = philo->data->start_time;
-	pthread_mutex_unlock(&philo->lock);
-	if (!philo->data->ttd)
-		return (0);
-	if (philo->data->nb_philo == 1)
-		return (case_one(philo));
-	else if (philo->id % 2)
-		waiting_time(philo, 1);
-	while (!monitoring_table(philo->data))
+	define_printing(data, philo, EATING);
+	pthread_mutex_lock(&philo->lunch_time);
+	philo->last_meal = time_in_ms();
+	pthread_mutex_unlock(&philo->lunch_time);
+	ft_usleep(data, data->tte);
+	philo->eat_count++;
+	if (philo->eat_count == data->nb_lunch)
 	{
-		lunch_time(philo);
-		waiting_time(philo, 0);
+		pthread_mutex_lock(&data->nb_of_lunch_reached);
+		data->philo_has_finish_eating++;
+		pthread_mutex_unlock(&data->nb_of_lunch_reached);
+		pthread_mutex_unlock(&philo->fork_left);
+		pthread_mutex_unlock(philo->fork_right);
+		return (1);
+	}
+	pthread_mutex_unlock(&philo->fork_left);
+	pthread_mutex_unlock(philo->fork_right);
+	return (0);
+}
+
+void	nap_time(t_data *data, t_philo *philo)
+{
+	define_printing(data, philo, SLEEPING);
+	ft_usleep(data, data->tts);
+	define_printing(data, philo, THINKING);
+}
+
+void	*routine(void *philo_pointer)
+{
+	t_philo	*philo;
+	t_data	*data;
+
+	philo = philo_pointer;
+	data = philo->data;
+	if (philo->id % 2 && data->nb_philo > 1)
+		ft_usleep(data, data->tte * 0.25);
+	while (!philo_died(data))
+	{
+		if (data->nb_philo % 2 && philo->eat_count)
+			ft_usleep(data, data->ttd * 0.2);
+		if (grab_forks(data, philo))
+			break ;
+		if (lunch_time(data, philo))
+			return (0);
+		nap_time(data, philo);
 	}
 	return (0);
 }
