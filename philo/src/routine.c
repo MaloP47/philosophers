@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 13:15:31 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/21 17:04:42 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/22 15:01:33 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,14 +68,51 @@ int	lunch_time(t_data *data, t_philo *philo)
 	return (0);
 }
 
+void	think_time(t_data *data, t_philo *philo)
+{
+	uint64_t	ttt;
+
+	pthread_mutex_lock(&philo->lunch_time);
+	ttt = (data->ttd - (time_in_ms() - philo->last_meal) - data->tte) / 2;
+	pthread_mutex_unlock(&philo->lunch_time);
+	if (ttt < 0)
+		ttt = 0;
+	if (ttt > 600)
+		ttt = 200;
+	define_printing(data, philo, THINKING);
+	ft_usleep(data, ttt);
+}
+
 void	nap_time(t_data *data, t_philo *philo)
 {
 	define_printing(data, philo, SLEEPING);
 	ft_usleep(data, data->tts);
-	define_printing(data, philo, THINKING);
+	think_time(data, philo);
 }
 
 void	*routine(void *philo_pointer)
+{
+	t_philo	*philo;
+	t_data	*data;
+
+	philo = philo_pointer;
+	data = philo->data;
+	if (philo->id % 2 && data->nb_philo > 1)
+		think_time(data, philo);
+	while (!philo_died(data))
+	{
+		if (data->nb_philo % 2 && philo->eat_count)
+			think_time(data, philo);
+		if (grab_forks(data, philo))
+			break ;
+		if (lunch_time(data, philo))
+			return (0);
+		nap_time(data, philo);
+	}
+	return (0);
+}
+
+/*void	*routine(void *philo_pointer)
 {
 	t_philo	*philo;
 	t_data	*data;
@@ -95,4 +132,4 @@ void	*routine(void *philo_pointer)
 		nap_time(data, philo);
 	}
 	return (0);
-}
+}*/

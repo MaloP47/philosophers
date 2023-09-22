@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/21 13:07:12 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/21 16:52:41 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/22 14:48:17 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	monitoring(t_data *data)
 		pthread_mutex_unlock(&data->nb_of_lunch_reached);
 		if (i == data->nb_philo - 1)
 			i = -1;
-		usleep(10);
+		usleep(20);
 	}
 	return (0);
 }
