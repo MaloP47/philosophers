@@ -6,7 +6,7 @@
 /*   By: mpeulet <mpeulet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/14 14:03:58 by mpeulet           #+#    #+#             */
-/*   Updated: 2023/09/21 14:36:22 by mpeulet          ###   ########.fr       */
+/*   Updated: 2023/09/25 11:01:10 by mpeulet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ int			philosopher(t_data *data);
 
 int			init_philo_util(t_data *data);
 void		monitoring_util_lock_lunch(t_data *data, int i);
+void		think_time(t_data *data, t_philo *philo);
 
 /* *** routine.c *** */
 
